@@ -8,35 +8,33 @@ xmlfile = re.compile('.*\.xml')
 capital = re.compile('.*[A-Z]*.*')
 geo = Geoparser()
 
-for inputfile in os.listdir("../processed_files/jmap"): # Only processing jmap right now
+'''
+geoparse_single_file
+Accepts as input the path to a file of raw text representing the body of a given journal article. The function parses out any location names and writes them to an output file as a list of Python dictionaries.
+
+:param path: Path to a txt file containing raw text that represents the body of a given journal article.
+:type path: str
+'''
+def geoparse_single_file(path) -> str:
 	name, extension = os.path.splitext(inputfile)
 	outfilename = name + "_output.txt"
-	inputfile = "../processed_files/jmap/" + inputfile
-	print("Outfile name: "+outfilename)
-	if xmlfile.match(inputfile) and outfilename not in os.listdir("../geoparser_output/jmap"): # Only process XML files
-		#geo = Geoparser()
+	inputfile = path
+	if xmlfile.match(inputfile): # Only process XML files
 		with open(inputfile, "r", encoding="utf-8") as infile:
-			print("Processing data from " + inputfile + "...")
+			print("Geoparsing data from " + inputfile + "...")
 			try:
 				data = infile.readlines()
 			except:
-				outfilename = "../geoparser_output/" + outfilename
 				with open(outfilename, "a") as outfile:
 					outfile.write("Unicode Error")
 				outfile.close()
 				data = "none"
 		infile.close()
-		outfilename = "../geoparser_output/" + outfilename
 		for line in data:
 			for word in line.split(): # For testing: eventually we'll want to parse a single word at a time to see what the geoparser is having a hard time with
-				#print(word)
-				#print("Running geoparser on " + word + "...")
 				output = geo.geoparse(str(word))
-
-				#print("Writing geoparser results for to " + outfilename + "...")
 				with open(outfilename, "a", errors='ignore') as outfile:
 					for line in output:
-
 						'''
 						IMPLEMENT FILTERS HERE
 						Filters, at least right now, are typically implemented using regular expressions. 
@@ -51,5 +49,4 @@ for inputfile in os.listdir("../processed_files/jmap"): # Only processing jmap r
 								print("Unicode error when trying to write word " + word['word'] + " to outfile.")
 
 				outfile.close()
-#		break # Temporary modification: process only one file at a time
-#		quit() # End script execution
+	return outfilename
