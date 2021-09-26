@@ -16,9 +16,9 @@ Accepts as input the path to a file of raw text representing the body of a given
 :type path: str
 '''
 def geoparse_single_file(path) -> str:
+	inputfile = path
 	name, extension = os.path.splitext(inputfile)
 	outfilename = name + "_output.txt"
-	inputfile = path
 	if xmlfile.match(inputfile): # Only process XML files
 		with open(inputfile, "r", encoding="utf-8") as infile:
 			print("Geoparsing data from " + inputfile + "...")

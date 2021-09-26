@@ -49,7 +49,6 @@ for file in files:
 	except:
 		continue
 	for line in lines:
-#		print(line)
 		try:
 			word = ast.literal_eval(line)
 		except:
