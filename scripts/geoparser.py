@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+ #!/usr/bin/python3
 # Currently modified to process only one file each time the script is run
 from mordecai import Geoparser
 import re
@@ -15,7 +15,7 @@ Accepts as input the path to a file of raw text representing the body of a given
 :param path: Path to a txt file containing raw text that represents the body of a given journal article.
 :type path: str
 '''
-def geoparse_single_file(path) -> str:
+def geoparse_single_file_deprecated(path) -> str:
 	inputfile = path
 	name, extension = os.path.splitext(inputfile)
 	outfilename = name + "_output.txt"
@@ -23,9 +23,9 @@ def geoparse_single_file(path) -> str:
 		with open(inputfile, "r", encoding="utf-8") as infile:
 			print("Geoparsing data from " + inputfile + "...")
 			try:
-				data = infile.readlines()
+				data = infile.readlines().encode('utf-8')
 			except:
-				with open(outfilename, "a") as outfile:
+				with open(outfilename, "w") as outfile:
 					outfile.write("Unicode Error")
 				outfile.close()
 				data = "none"
@@ -33,7 +33,7 @@ def geoparse_single_file(path) -> str:
 		for line in data:
 			for word in line.split(): # For testing: eventually we'll want to parse a single word at a time to see what the geoparser is having a hard time with
 				output = geo.geoparse(str(word))
-				with open(outfilename, "a", errors='ignore') as outfile:
+				with open(outfilename, "w", errors='ignore') as outfile:
 					for line in output:
 						'''
 						IMPLEMENT FILTERS HERE
@@ -50,3 +50,23 @@ def geoparse_single_file(path) -> str:
 
 				outfile.close()
 	return outfilename
+
+def geoparse_single_file(infilepath, outfilepath):
+        outfile = open(outfilepath, 'w', encoding='utf-8')
+        infile = open(infilepath, 'r', encoding = 'utf-8')
+        content = infile.read()
+        content = content.encode('utf-8')
+        content_string = str(content)
+        words = content_string.split(' ')
+        for word in words:
+                if len(word) < 2:
+                        continue
+                print(word + " of type " + str(type(word)))
+                #continue
+                output = geo.geoparse(word)
+                if len(output) > 0:
+                        outfile.write(str(output))
+                        outfile.write('\n')
+        outfile.close()
+        infile.close()
+        return outfilepath

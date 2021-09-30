@@ -1,72 +1,34 @@
 import json, ast, os, re
-geoderma = re.compile('.*Geoderma.*')
-AOU = re.compile('.*AOU.*')
 
-#if filters is not empty then the script only processes files that pass a filter
-filters = [
-#	geoderma,
-#	AOU
-]
-
-#checkes all files in these folders
-folders = [
-	"/JournalMap/CS480/geoparser_output/",
-	"/JournalMap/CS480/geoparser_output/jmap/"
-]
-
-
-#use this if you want to check single files
-files = [
-#	"/JournalMap/CS480/geoparser_output/singlefile.txt"
-]
-
-outfile = "countnames_output.txt"
-
-output = open(outfile, "w");
-
-#after this loop, the files list has all the files that are going to be processed
-for inputfolder in folders:
-	for inputfile in os.listdir(inputfolder):
-		if(os.path.isdir(inputfile)):
-			continue
-		if(filters):
-			for filtr in filters:
-				if(filtr.match(inputfile)==None):
-					continue
-				else:
-					files.append(inputfolder + inputfile)
-					break
-		else:
-			files.append(inputfolder + inputfile)
-
-#counts up the number of times each word is found
-for file in files:
+def analyze_single_file(path):
 	checked_names = {}
-	
+	top_name = ""
+
 	try:
-		with open(file, "r") as Finput:
+		with open(path, "r", encoding='utf-8') as Finput:
 			lines = Finput.readlines()
 	except:
-		continue
+		print("ERROR: Unable to read lines from infile.")
+		return
+
 	for line in lines:
 		try:
 			word = ast.literal_eval(line)
 		except:
+			print("WARNING: Unable to perform a literal evaluation of line " + str(line) + '.')
 			continue
-		placename = word['word']
+		placename = word[0]['word']
 		if placename not in checked_names:
 			checked_names[placename] = 1
 		else:
 			checked_names[placename] = checked_names[placename] + 1
-			
+
 	if(checked_names):
 		top_name = max(checked_names, key=checked_names.get)
 		max_count = checked_names[top_name]
 		checked_names[top_name] = 0
 		second_name = max(checked_names, key=checked_names.get)
-		output.write("FILE: " + str(file) + " TOP NAME: "+ top_name + "(appears " + str(max_count) + " times)" + " SECOND NAME: " + second_name)
-		output.write("\n")
-	Finput.close()
-	
+	print("The most referenced name is " + str(top_name) + '! The second most mentioned name is ' + str(second_name) + '.')
 
-output.close()
+	Finput.close()
+	return top_name

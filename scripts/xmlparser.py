@@ -5,7 +5,7 @@ from pathlib import Path
 
 #regular expression to remove xml tags
 xml_tags = re.compile('<.*?>')
-
+xml_end_tag = re.compile('<\/.*?>')
 '''
 xml_parse_single_file
 Accepts as input a path to an XML file. Parses the relevant fields out of the XML file, writes the result to a text file, and returns the path to the text file.
@@ -25,11 +25,10 @@ def xml_parse_single_file(path) -> str:
             for line in lines:
                 if line:
                     #removes all tags from the output and writes to the file
+                    line = re.sub(xml_end_tag, '\n', line)
                     f.write(re.sub(xml_tags, ' ', line))
                     tagFound = True
                 else:
                     continue
             f.close()
         return filename.replace('xml', 'txt')
-              
-                
