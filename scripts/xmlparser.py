@@ -19,15 +19,16 @@ def xml_parse_single_file(path, tagList = []) -> str:
 
 	# [("<xocs:rawtext>","</xocs:rawtext>"),("<dc:description>","</dc:description>")] tagSetList example
         # Build the tagSetList
-        if len(tagList) == 0:
-            tagSetList = []
+        tagSetList = []
         for tag in tagList:
             openTag = "<" + tag + ">"
             closeTag = "</" + tag + ">"
             tempList = []
             tempList.append(openTag)
             tempList.append(closeTag)
-            tagSetList = tuple(tempList)
+            tagSetTuple = tuple(tempList)
+            tagSetList.append(tagSetTuple)
+        print("tagSetList tuple: " + str(tagSetList))
 
         if not filename.endswith(".xml"):
             print("ERROR: You passed in a path to a non-xml file. Please ensure that the path is correct.")
@@ -42,13 +43,21 @@ def xml_parse_single_file(path, tagList = []) -> str:
             # Only executes if no tag list was passed in
             if len(tagList) == 0:
                 print("WARNING: No list of relevant tags passed in. The XML parser will parse out all text between all tags.")
-                fileContent = file.readlines()
-                for line in fileContent:
-                    line = re.sub(xml_end_tag, '\n', line)
-                    f.write(re.sub(xml_tags, ' ', line)
+                print("LOG: writing to outfile...")
+                line = re.sub(xml_end_tag, '\n', line)
+                f.write(re.sub(xml_tags, ' ', line))
+                f.close()
+                return filename.replace('xml', 'txt')
+
             # Only executes if tag list was passed in
             for tags in tagSetList: # 'tags' is a two-tuple of XML tags (e.g. ("<xocs:rawtext>","</xocs:rawtext>"))
+                print("LOG: Processing a file with tagSetList " + str(tagSetList))
+                fileContent = line
+                print("File content: " + str(fileContent))
+                print("LOG: Searching for text entries between " + tags[0] + " and " + tags[1] + ".")
                 relevantTexts = re.findall(tags[0] + '.*' + tags[1], fileContent)
+                relevantTextCount = str((len(relevantTexts)))
+                print("Found " + relevantTextCount + " relevant texts.")
                 for relevantText in relevantTexts:
                     if relevantText:
                         #removes all tags from the output and writes to the file
