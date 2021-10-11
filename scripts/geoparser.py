@@ -61,10 +61,16 @@ def geoparse_single_file(infilepath, outfilepath):
         for word in words:
                 if len(word) < 2:
                         continue
-                print(word + " of type " + str(type(word)))
+                #print(word + " of type " + str(type(word)))
                 #continue
                 output = geo.geoparse(word)
-                if len(output) > 0:
+                '''
+                IMPLEMENT FILTERS HERE
+                Filters, at least right now, are typically implemented using regular expressions.
+                To implement one, you should build a regular expression that matches an attribute that you want to exclude from the geoparser output.
+                Then, use the if statement below to filter out geonames that possess that attribute.
+                '''
+                if len(output) > 0 and capital.match(word):
                         outfile.write(str(output))
                         outfile.write('\n')
         outfile.close()
