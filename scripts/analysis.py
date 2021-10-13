@@ -28,7 +28,6 @@ def analyze_single_file(path):
 		max_count = checked_names[top_name]
 		checked_names[top_name] = 0
 		second_name = max(checked_names, key=checked_names.get)
-	print("The most referenced name is " + str(top_name) + '! The second most mentioned name is ' + str(second_name) + '.')
 
 	Finput.close()
 	return top_name

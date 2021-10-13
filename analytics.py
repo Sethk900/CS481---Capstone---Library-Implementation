@@ -16,7 +16,6 @@ def generate_file_label(path: str, keep_generated_files: bool = False) -> dict:
 	generated_files.append(raw_text_file)
 	geoparser_results = geoparse_single_file(path, path.strip('\.txt') + '_output.txt')
 	predicted_study_location = analyze_single_file(geoparser_results)
-	print("Predicted Study Location: " + predicted_study_location[0]['word'])
 	result = {}
 	filename = path.split('/')
 	filename = filename[len(filename)]
