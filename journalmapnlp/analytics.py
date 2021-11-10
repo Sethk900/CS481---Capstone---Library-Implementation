@@ -22,7 +22,7 @@ def generate_file_label(path: str, keep_generated_files: bool = False) -> dict:
     predicted_study_location = analyze_single_file(geoparser_results)
     result = {}
     filename = path.split('/')
-    filename = filename[len(filename)]
+    filename = filename[len(filename) - 1]
     result[filename] = predicted_study_location
 
     # If user doesn't want to keep the generated files, remove them
